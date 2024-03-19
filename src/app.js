@@ -1,7 +1,7 @@
 const Hapi = require("@hapi/hapi")
 
 // start routes
-const { userRoute } = require("./routes/index.js")
+const { userRoute, categoryRoute } = require("./routes/index.js")
 
 const init = async () => {
     const server = Hapi.server({
@@ -11,6 +11,7 @@ const init = async () => {
 
     // routes
     server.route(userRoute)
+    server.route(categoryRoute)
 
 
 await server.start()

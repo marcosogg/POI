@@ -1,9 +1,9 @@
 const collection = require("../../models/collection")
 const {ObjectId} = require("mongodb")
 
-const collectionClient = collection("category")
+const collectionClient = collection("points")
 
-class CategoryMongo {
+class PointsMongo {
 
     async findAll(){
         const res = await collectionClient.find({}).toArray()
@@ -50,4 +50,4 @@ class CategoryMongo {
     }
 }
 
-module.exports = CategoryMongo
+module.exports = PointsMongo

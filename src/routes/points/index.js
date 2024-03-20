@@ -1,41 +1,41 @@
-const {schemaCategory, schemaCategoryUpdate, schemaCategoryDelete} = require("../../controller/category/index.js")
-const CategoryMongo = require("../../services/category/index.js")
+const {schemaPoints, schemaPointsDelete, schemaPointsUpdate} = require("../../controller/points/index.js")
+const PointsMongo = require("../../services/points/index.js")
 
-const client = new CategoryMongo()
+const client = new PointsMongo()
 
-const categoryRoute = [
+const pointRoute = [
     {
         method: "GET",
-        path: "/categories",
+        path: "/points",
         handler: async (request, h) => {
 
-            const categories = await client.findAll()
+            const points = await client.findAll()
             return {
                 error: false,
                 message: "Success",
-                categories
+                points
             }
         }
     },
     {
         method: "GET",
-        path: "/categories_details/{name}",
+        path: "/points_details/{name}",
         handler: async (request, h) => {
 
-            const categories = await client.findOne(request.params.name)
+            const points = await client.findOne(request.params.name)
             return {
                 error: false,
                 message: "Success",
-                categories
+                points
             }
         }
     },
     {
         method: "POST",
-        path: "/create_category",
+        path: "/create_point",
         handler: async (request, h) => {
             
-            const validate = schemaCategory.validate(request.payload)
+            const validate = schemaPoints.validate(request.payload)
 
             if(validate.error){
                 return {
@@ -54,13 +54,13 @@ const categoryRoute = [
     },
     {
         method: "PUT",
-        path: "/update_category/{name}",
+        path: "/update_point/{name}",
         handler: async (request, h) => {
 
             const arrErrors = []
             
-            const validatePayload = schemaCategory.validate(request.payload)
-            const validateParams = schemaCategoryUpdate.validate(request.params.name)
+            const validatePayload = schemaPoints.validate(request.payload)
+            const validateParams = schemaPointsUpdate.validate(request.params.name)
           
             if(validatePayload.error) arrErrors.push(validatePayload.error.message)
             if(validateParams.error) arrErrors.push(validateParams.error.message)
@@ -73,7 +73,7 @@ const categoryRoute = [
             const response = await client.update(request.params.name, request.payload)
             if(response) return {
                 error: false,
-                message: "Category updated"
+                message: "Point updated"
             }
             return {
                 error: true,
@@ -84,10 +84,10 @@ const categoryRoute = [
     },
     {
         method: "DELETE",
-        path: "/delete_category/{id}",
+        path: "/delete_point/{id}",
         handler: async (request, h) => {
             
-            const validate = schemaCategoryDelete.validate(request.params.id)
+            const validate = schemaPointsDelete.validate(request.params.id)
 
             if(validate.error){
                 return {
@@ -99,7 +99,7 @@ const categoryRoute = [
             const response = await client.delete(request.params.id)
             if(response) return {
                 error: false,
-                message: "Category deleted"
+                message: "Point deleted"
             }
             return {
                 error: true,
@@ -110,4 +110,4 @@ const categoryRoute = [
     },
 ]
 
-module.exports = categoryRoute
+module.exports = pointRoute

@@ -5,46 +5,63 @@ const collPoint = collection("points")
 
 class AnalyticsData {
 
-
     async findAllCat(){
         const res = await collCategory.find({}).toArray()
-        if(res) return res.result.categories
+        let data = []
+
+        res.forEach(element => data.push({
+            id: element._id.toString(),
+            name: element.name
+        }))
+
+        if(res) return data
         return false
     }
 
     async findAllPoints(){
         const res = await collPoint.find({}).toArray()
-        if(res) return res.result.points
+        let data = []
+
+        res.forEach(element => data.push({
+            id: element._id.toString(),
+            name: element.name,
+            category_id: element.category_id,
+            description: element.description
+        }))
+        
+        
+        if(res) return data
         return false
     }
 
     async qtyByCategory(){
 
-        const analytics = {}
+        let analytics = {}
         
         const categories = await this.findAllCat()
         const points = await this.findAllPoints()
+        console.log(points)
 
-        points.forEach((element, key) => {
+        categories.forEach((category) => {
+            
+            let qnty = 0
 
-            if(key > categories.length){
-                key = categories.length
-            }
-
-            if(element.category_id === categories[key -1]["_id"]){
+            points.forEach((point) => {
                 
-                let qnty = 0
+                if(category.id === point.category_id) {
 
-                analytics = {
-                    ...analytics,
-                    [categories[key]["name"]]: qnty++
+                    qnty++
+
+                    analytics = {
+                        ...analytics,
+                        [category.name]: qnty
+                    }
                 }
-            }
+
+            })
         })
-        
         return analytics
     }
-
 }
 
 module.exports = AnalyticsData

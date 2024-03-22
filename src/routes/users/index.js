@@ -1,5 +1,6 @@
 const {schemaUserCreate, schemaUserLogin, schemaUserDelete, schemaUserUpdate} = require("../../controller/user/index.js")
 const UserMongo = require("../../services/users/index.js")
+const generateID = require("../../utils/generateId.js")
 
 const client = new UserMongo()
 
@@ -48,15 +49,31 @@ const userRoute = [
             }
 
             const user = await client.login(request.payload)
-            if(user) return {
-                error: false,
-                user
+            if(user) {
+                const sid = generateID()
+                h.state("poi-cookie", sid)
+
+                return h.response({
+                    error: false,
+                    user
+                }).state("poi-cookie", sid)
             }
             return {
                 error: true,
                 message: "Unauthorized"
             }
 
+        },
+        options: {
+            auth: {
+                mode: "try",
+                strategy: "session"
+            },
+            plugins: {
+                "hapi-auth-cookie": {
+                    redirectTo: false
+                }
+            }
         }
     },
     {

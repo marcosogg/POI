@@ -10,6 +10,10 @@ const userRoute = [
         path: "/",
         handler: (request, h) => {
             return "PONG!"
+        },
+        options: {
+            tags: ["api"],
+            description: "PING",
         }
     },
     {
@@ -31,8 +35,7 @@ const userRoute = [
                 error: false,
                 message: "Success"
             }
-
-        }
+        },
     },
     {
         method: "POST",
@@ -73,6 +76,11 @@ const userRoute = [
                 "hapi-auth-cookie": {
                     redirectTo: false
                 }
+            },
+            tags: ["api"],
+            description: "Login endpoint user",
+            validate: {
+                payload: schemaUserLogin
             }
         }
     },

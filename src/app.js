@@ -1,5 +1,12 @@
 const Hapi = require("@hapi/hapi")
 
+// set up swagger
+const Inert = require("@hapi/inert")
+const Vision = require("@hapi/vision")
+const HapiSwagger = require("hapi-swagger")
+const Pack = require("../package.json")
+const Boom = require("@hapi/boom")
+
 // start routes
 const { userRoute, categoryRoute, pointRoute, analyticsRoute } = require("./routes/index.js")
 
@@ -10,7 +17,20 @@ const init = async () => {
     })
 
 
-    await server.register(require("@hapi/cookie"))
+    await server.register([
+        Inert,
+        Vision,
+        {
+            plugin: HapiSwagger,
+            options: {
+                info: {
+                    title: "Api Doc",
+                    version: Pack.version
+                }
+            }
+        },
+        require("@hapi/cookie")
+    ])
 
     server.auth.strategy('session', 'cookie', {
         cookie: {
